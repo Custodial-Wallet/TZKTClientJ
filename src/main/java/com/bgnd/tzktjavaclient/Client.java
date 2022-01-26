@@ -8,14 +8,16 @@ import com.microsoft.signalr.HubConnectionBuilder;
 import io.reactivex.rxjava3.core.Completable;
 import org.json.JSONObject;
 
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.logging.Logger;
 
-public class Client {
+public final class Client {
 
     // Constants
 
     private static final String OPERATIONS_HANDLER_TARGET = "operations";
     private static final String OPERATIONS_SUBSCRIPTION = "SubscribeToOperations";
+    private static final Logger log = Logger.getLogger(Client.class.getName());
 
     // Variables
 
@@ -29,19 +31,20 @@ public class Client {
 
     // Public
 
-    public void startAllTransactionSubs() {
+    public void subscribeToAllTransactions() {
         final JSONObject args = new JSONObject();
         args.put("types", "transaction");
 
         connection.send(OPERATIONS_SUBSCRIPTION, args);
+        log.info("Started to listen all transactions in Tezos blockchain");
     }
 
     public Completable startConnection() {
         return connection.start();
     }
 
-    public void addOnClosedCommand(BiConsumer<HubConnection, Client> command) {
-        final ClosedCallback callback = new ClosedCallback(connection, this, command);
+    public void addOnClosedCommand(Consumer<Client> command) {
+        final ClosedCallback callback = new ClosedCallback(this, command);
 
         connection.onClosed(callback);
     }

@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Data
-public class Tx {
+public final class Tx {
 
     // Constants
 
@@ -28,7 +28,7 @@ public class Tx {
     // Address
 
     @Data
-    public static class Address {
+    public static final class Address {
         private String address;
     }
 }

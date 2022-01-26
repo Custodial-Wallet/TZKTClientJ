@@ -1,10 +1,9 @@
 package com.bgnd.tzktjavaclient.callbacks;
 
 import com.bgnd.tzktjavaclient.Client;
-import com.microsoft.signalr.HubConnection;
 import com.microsoft.signalr.OnClosedCallback;
 
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 
@@ -16,21 +15,19 @@ public class ClosedCallback implements OnClosedCallback {
 
     // Variables
 
-    protected final HubConnection connection;
     protected final Client client;
-    protected BiConsumer<HubConnection, Client> command;
+    protected Consumer<Client> command;
 
     // Constructor
 
-    public ClosedCallback(HubConnection connection, Client client, BiConsumer<HubConnection, Client> command) {
-        this.connection = connection;
+    public ClosedCallback(Client client, Consumer<Client> command) {
         this.client = client;
         this.command = command;
     }
 
     @Override
     public void invoke(Exception e) {
-        log.info(e.getMessage());
-        command.accept(connection, client);
+        log.info("Connection was closed! Trying to reconnect ...");
+        command.accept(client);
     }
 }
